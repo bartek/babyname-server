@@ -19,18 +19,19 @@ class Command(BaseCommand):
             year, name, popularity, gender = row
 
             # Check if name exists.
-            name = Name.objects.filter(name=name)
+            names = Name.objects.filter(name=name)
 
             # Insert a new name.
-            if not name:
+            if not names:
                 Name.objects.create(
                     name=name,
                     gender=gender,
                 )
                 continue
 
+            name = names[0]
             # We have a name already. Eventually populate popularity in this
             # scenario.
-            continue
+            print "Existing name", name
 
         f.close()
