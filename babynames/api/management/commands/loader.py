@@ -1,8 +1,9 @@
 import csv
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from ...models import Name
+
 
 class Command(BaseCommand):
     help = 'Load open data into name database'
@@ -13,7 +14,7 @@ class Command(BaseCommand):
 
         reader = csv.reader(f)
 
-        next(reader, None) # Skip first row.
+        next(reader, None)  # Skip first row.
 
         for row in reader:
             year, name, popularity, gender = row
@@ -22,16 +23,14 @@ class Command(BaseCommand):
             names = Name.objects.filter(name=name)
 
             # Insert a new name.
-            if not names:
+            if names.count() == 0:
                 Name.objects.create(
                     name=name,
                     gender=gender,
                 )
                 continue
 
-            name = names[0]
-            # We have a name already. Eventually populate popularity in this
-            # scenario.
-            print "Existing name", name
+            # FIXME: We have a name already. Eventually populate popularity in this scenario.
+            pass
 
         f.close()
