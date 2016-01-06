@@ -10,3 +10,6 @@ class Name(models.Model):
         ('boy', 'Boy'),
         ('girl', 'Girl'),
     ))
+
+    def __unicode__(self):
+        return self.name
