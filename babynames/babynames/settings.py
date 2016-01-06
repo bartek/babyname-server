@@ -121,3 +121,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100
+}
+
+# Import environment localsettings
+#
+# This can be specified in the uwsgi ini file, e.g.:
+#
+#   env = DJANGO_LOCAL_SETTINGS=conf.settings.localsettings_staging
+#
+# or with a standard export:
+#
+#   export DJANGO_LOCAL_SETTINGS='mylocalsettingsmodule'
+#
+DJANGO_LOCAL_SETTINGS = os.environ.get('DJANGO_LOCAL_SETTINGS', None)
+if DJANGO_LOCAL_SETTINGS:
+    module = __import__(DJANGO_LOCAL_SETTINGS, globals(), locals(), ['*'])
+    for k in dir(module):
+        if k.startswith('__'):
+            continue
+        locals()[k] = getattr(module, k)
+else:
+    # Import general localsettings if present
+    try:
+        from localsettings import *  # NOQA
+    except ImportError, e:
+        pass
