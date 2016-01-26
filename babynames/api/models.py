@@ -6,6 +6,16 @@ from django.contrib.postgres.fields import ArrayField
 from .constants import GENDER_CHOICES, NEUTRAL
 
 
+def names_difference_with_share_code(queryset, share_code):
+    """
+    Returns a queryset of Name's where the `share_code`
+    is used with it's respective NameCollection to ensure no Name objects from
+    that collection are in the resulting queryset.
+    """
+    collection = NameCollection.objects.get(share_code=share_code)
+    return queryset.exclude(id__in=collection.favourites + collection.ignored)
+
+
 class Name(models.Model):
     name = models.CharField(max_length=45)
     gender = models.CharField(max_length=8, choices=GENDER_CHOICES)
