@@ -19,6 +19,7 @@ def names_difference_with_share_code(queryset, share_code):
 class Name(models.Model):
     name = models.CharField(max_length=45)
     gender = models.CharField(max_length=8, choices=GENDER_CHOICES)
+    popularity = ArrayField(models.FloatField(), default=list)
 
     def __unicode__(self):
         return self.name
