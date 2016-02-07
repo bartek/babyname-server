@@ -1,6 +1,6 @@
 import csv
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from ...models import Name
 
@@ -8,11 +8,18 @@ from ...models import Name
 class Command(BaseCommand):
     help = 'Load open data into name database'
 
-    def handle(self, *args, **options):
-        # From the perspective of the path for manage.py
-        f = open('../data/united-states-1000-1880.csv', 'r')
+    def add_arguments(self, parser):
+        parser.add_argument('file', nargs=1, type=str)
 
-        reader = csv.reader(f)
+    def handle(self, *args, **options):
+        file_path = options['file'][0]
+
+        try:
+            csvfile = open(file_path, 'r')
+        except IOError:
+            raise CommandError("Unable to open file, {}".format(file_path))
+
+        reader = csv.reader(csvfile)
 
         next(reader, None)  # Skip first row.
 
@@ -27,10 +34,12 @@ class Command(BaseCommand):
                 Name.objects.create(
                     name=name,
                     gender=gender,
+                    popularity=[popularity],
                 )
-                continue
 
-            # FIXME: We have a name already. Eventually populate popularity in this scenario.
-            pass
+            # Update existing names popularity.
+            name = names[0]
+            name.popularity.append(popularity)
+            name.save()
 
-        f.close()
+        csvfile.close()
