@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework import generics
 
 from .models import (
@@ -15,6 +16,8 @@ from .serializers import (
 class NameList(generics.ListAPIView):
     queryset = Name.objects.all()
     serializer_class = NameSerializer
+    filter_backends = (filters.DjangoFilterBackend, )
+    filter_fields = ('gender', )
 
     def get_queryset(self):
         """

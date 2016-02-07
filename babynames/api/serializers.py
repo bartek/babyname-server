@@ -6,7 +6,7 @@ from .models import Name, NameCollection
 class NameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Name
-        fields = ('id', 'name', 'gender')
+        fields = ('id', 'name', 'gender', 'popularity')
 
 
 class NameCollectionSerializer(serializers.ModelSerializer):
