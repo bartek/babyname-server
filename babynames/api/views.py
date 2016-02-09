@@ -38,10 +38,18 @@ class NameList(generics.ListAPIView):
         return queryset
 
 
-class ShareCodeView(generics.RetrieveUpdateDestroyAPIView):
+class NameCollectionDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     Fetch, update, or delete NameCollection instances.
     """
     queryset = NameCollection.objects.all()
     serializer_class = NameCollectionSerializer
     lookup_field = 'share_code'
+
+
+class NameCollectionRootView(generics.ListCreateAPIView):
+    """
+    Create NameCollection instances.
+    """
+    queryset = NameCollection.objects.all()
+    serializer_class = NameCollectionSerializer
